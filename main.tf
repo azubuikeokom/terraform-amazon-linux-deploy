@@ -5,7 +5,7 @@ provider "aws"{
 
 }
 resource "aws_instance" "my-amazon-linux" {
-      ami = "ami-090fa75af13c156b4"
+      ami = "ami-0cabc39acf991f4f1"
       key_name = "eks-key"
       instance_type = "t2.micro"
       availability_zone = "us-east-1a"
@@ -22,7 +22,11 @@ resource "aws_instance" "my-amazon-linux" {
         sudo yum install -y httpd wget php-fpm php-mysqli php-json php php-devel
         sudo dnf install mariadb105-server
         sudo systemctl start httpd
-        sudo systemctl enable httpd    
+        sudo systemctl enable httpd
+        sudo usermod -a -G apache ec2-user    
+        sudo chown -R ec2-user:apache /var/www/html
+        sudo chmod 2775 /var/www/html && find /var/www/html -type d -exec sudo chmod 2775 {} \
+        echo "<?php phpinfo(); ?>" > /var/www/html/phpinfo.php
         EOF
 
 }
